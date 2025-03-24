@@ -1,0 +1,28 @@
+name: Release Docker Image
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  extract_version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+    steps:
+      - name: Extract semver version
+        id: extract
+        shell: bash
+        run: |
+          # Get the tag name (e.g. “v1.2.3” or “1.2.3”)
+          tag="${GITHUB_REF#refs/tags/}"
+          # Remove “v” prefix if present
+          version=$(echo "$tag" | sed 's/^v//')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Extracted version: $version"
+
+  docker_build:
+    needs: extract_version
+    uses: ./.github/workflows/docker.yaml
+    with:
+      version: ${{ needs.extract_version.outputs.version }}
