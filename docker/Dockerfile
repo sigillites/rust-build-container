@@ -5,8 +5,8 @@ FROM rust:1.85.1-slim-bookworm AS build-base
 
 # Prepopulate cargo index and install dependencies
 RUN cargo search --limit=1 && \
-  apt update && apt upgrade -y && \
-  apt -y install --no-install-recommends \
+  apt-get update && apt-get upgrade -y && \
+  apt-get -y install --no-install-recommends \
   g++-x86-64-linux-gnu \
   g++-aarch64-linux-gnu \
   protobuf-compiler \
@@ -16,10 +16,13 @@ RUN cargo search --limit=1 && \
   llvm \
   liburing-dev \
   ca-certificates \
+  pkg-config \
+  libssl-dev \
   build-essential \
   git \
   curl && \
   apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # Install rustup components and global tools in a single layer
 RUN rustup target add \
