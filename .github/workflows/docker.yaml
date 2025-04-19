@@ -8,4 +8,7 @@ jobs:
   build-docker-image:
     name: Build docker image
     uses: sigillites/actions/.github/workflows/docker-build.yaml@main
+    with:
+      imageName: rust-build-container
+      dockerfilePath: "docker/Dockerfile"
     secrets: inherit
